@@ -1,7 +1,6 @@
 # Contact app react
 
-this repo is made to learn react fundamentals, and react router
-
+this repo is made to learn react fundamentals, and react router.
 ## feature
 
 <ul>
