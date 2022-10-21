@@ -11,9 +11,31 @@ class ContactApp extends React.Component {
         super(props);
         this.state = {
             authedUser: null,
+            initializing: true,
         };
         this.onLoginSuccess = this.onLoginSuccess.bind(this);
+        this.onLogout = this.onLogout.bind(this);
     }
+
+    async componentDidMount() {
+        const { data } = await getUserLogged();
+
+        this.setState(() => {
+            return {
+                authedUser: data,
+                initializing: false,
+            };
+        });
+    }
+    onLogout() {
+        this.setState(() => {
+            return {
+                authedUser: null,
+            };
+        });
+        putAccessToken("");
+    }
+
     async onLoginSuccess({ accessToken }) {
         putAccessToken(accessToken);
         const { data } = await getUserLogged();
@@ -23,7 +45,11 @@ class ContactApp extends React.Component {
             };
         });
     }
+
     render() {
+        if (this.state.initializing) {
+            return null;
+        }
         if (this.state.authedUser == null) {
             return (
                 <div className="contact-app">
@@ -54,7 +80,10 @@ class ContactApp extends React.Component {
             <div className="contact-app">
                 <header className="contact-app__header">
                     <h1>Aplikasi kontak</h1>
-                    <Navigation />
+                    <Navigation
+                        logout={this.onLogout}
+                        name={this.state.authedUser.name}
+                    />
                 </header>
                 <main>
                     <Routes>
